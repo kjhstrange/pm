@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <stack>
 #include <tuple>
 #include <algorithm>
 
@@ -17,7 +16,7 @@ int main(){
 
     vector<tuple<int, int>> meets(n);
     vector<int> graph(n);
-    stack<int> table;
+    vector<int> val(n, 1);
 
     // input
     for(int i=0;i<n;i++){
@@ -35,9 +34,31 @@ int main(){
         for(int j=i+1;j<n;j++){
             if(get<1>(meets[i]) <= get<0>(meets[j])){
                 graph[i] = j;
+                break;
             }
         }
     }
 
+    // finding answer
+    for(int i=n-1;i>=0;i--){
+        if(graph[i] == -1)continue;
+
+        int upper_bound = n;
+        for(int j=graph[i];j<n;j++){
+            if(j >= upper_bound)break;
+
+            if(val[j] >= val[i]){
+                val[i] = val[j] + 1;
+            }
+            if(upper_bound > graph[j]){
+                upper_bound = graph[j];
+            }
+        }
+
+        if(cnt < val[i]){
+            cnt = val[i];
+        }
+    }   
     
+    cout << cnt;
 }
